@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Order History
+{% endblock %}
+
+{% block main %}
+
+    <table style='margin-top: 30px' class="table table-striped table-dark">
+      <thead>
+        <tr>
+          <th scope="col"> Symbol </th>
+          <th scope="col"> Shares </th>
+          <th scope="col"> Purchase/Sale Price </th>
+          <th scope="col"> Total Value </th>
+          <th scope="col"> Transaction Type </th>
+          <th scope="col"> Transaction Time (UTC) </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <th scope="row">
+              {{ row["symbol"] }}
+          </th>
+          <td>  {{ row["shares"] }}  </td>
+          <td>  {{ row["price"] }}  </td>
+          <td>  {{ row["total_value"] }}  </td>
+          <td>  {{ row["method"] }}  </td>
+          <td>  {{ row["transacted_at"] }}  </td>
+        </tr>
+        {% endfor %}
+
+      </body>
+    </table>
+{% endblock %}
