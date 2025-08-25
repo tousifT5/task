@@ -15,6 +15,33 @@ from plotly.subplots import make_subplots
 
 
 # ############################################################ PLOTS ############################################################
+
+def calculate_rsi(data, window=14):
+    """Calculates Relative Strength Index (RSI) manually."""
+    # Ensure 'Close' column is numeric
+    close_prices = data['Close'].astype("float")
+
+    # Calculate price changes
+    delta = close_prices.diff()
+
+    # Calculate gains (upward changes) and losses (downward changes)
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+
+    # Calculate average gains and losses over the window
+    avg_gain = gain.rolling(window=window, min_periods=1).mean()
+    avg_loss = loss.rolling(window=window, min_periods=1).mean()
+
+    # Calculate Relative Strength (RS)
+    # Handle division by zero for avg_loss
+    rs = np.where(avg_loss == 0, np.inf, avg_gain / avg_loss)
+
+    # Calculate RSI
+    rsi = 100 - (100 / (1 + rs))
+
+    return rsi
+
+
 def rsi(ticker="AAPL",date="2025-08-20",interval="5m"):
     start = datetime.strptime(date, "%Y-%m-%d")
     end = start + timedelta(days=1)
@@ -23,12 +50,21 @@ def rsi(ticker="AAPL",date="2025-08-20",interval="5m"):
     print(data.shape)
     data.reset_index(inplace=True)
     
-    data['RSI'] = data.ta.rsi(close=data["Close"].astype("float"), length=14)
+    data['RSI'] = calculate_rsi(data, window=14)
     rsi = px.scatter(data ,x="Datetime",y= "RSI")
     rsi.update_traces(mode='lines')
     rsi.update_layout( template="plotly_dark",width = 1450,title_text=f'RSI for {ticker.upper()}')
     
     return rsi
+
+
+def calculate_sma(data, window):
+    """Calculates Simple Moving Average (SMA) manually."""
+    return data['Close'].rolling(window=window).mean()
+
+def calculate_ema(data, window):
+    """Calculates Exponential Moving Average (EMA) manually."""
+    return data['Close'].ewm(span=window, adjust=False).mean()
 
 
 def candle(ticker="AAPL",date="2025-08-20",interval="5m"):
@@ -39,8 +75,8 @@ def candle(ticker="AAPL",date="2025-08-20",interval="5m"):
     print(data.shape)
     data.reset_index(inplace=True)
     
-    data['SMA_10'] = ta.sma(data['Close'], length=10)
-    data['EMA_10'] = ta.ema(data['Close'], length=10)
+    data['SMA_10'] = calculate_sma(data, 10)
+    data['EMA_10'] = calculate_ema(data, 10)
     # sma = px.scatter(data ,x="Datetime",y= "SMA_3",title="SMA")
     # sma.update_traces(mode='lines')
 
