@@ -23,10 +23,9 @@ msgspec==0.19.0
 multitasking==0.0.12
 narwhals==2.1.2
 nest-asyncio==1.6.0
-numpy==1.23.5
+numpy==2.2.6
 packaging==25.0
 pandas==2.3.1
-pandas-ta==0.3.14b0
 peewee==3.18.2
 platformdirs==4.3.8
 plotly==6.3.0

@@ -7,7 +7,6 @@ import json
 from dash import dcc ,html ,Input, Output, callback ,State
 import yfinance as yf
 from datetime import datetime,timedelta,date
-import pandas_ta as ta
 from plotly.subplots import make_subplots
 
 
